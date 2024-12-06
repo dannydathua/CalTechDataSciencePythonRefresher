@@ -1,10 +1,14 @@
 from datetime import datetime
-
+import csv
 expenses = []
 budget = 0
 
 def add_expense():
   try:
+    ## validate date
+    ## validate category
+    ## validate amount
+    ## validate description
     date = input("Enter + the date (YYYY-MM-DD): ")
     datetime.strptime(date, "%Y-%m-%d")
     amount = float(input("Enter the expense amount: "))
@@ -53,17 +57,33 @@ def get_budget():
 
 def save_expenses():
   try:
-    with open("expenses.csv", "w") as file:
-      file.write("Expense History:\n")
-      file.writelines
+    with open("expenses.csv", "w", newline='') as file:
+      fieldnames = expenses[0].keys()
+      writer = csv.DictWriter(file, fieldnames=fieldnames)
+      writer.writeheader()
+      writer.writerows(expenses)
+      print(f"expenses.csv is written successfully!")
+    with open('expenses.csv', 'r') as file:
+      content = csv.reader(file)
+      for r in content:
+        print(r)
   except IOError:
     print("Error saving expenses.")
 
+
+# Create another function that calculates the total expenses recorded so far
+# o Compare the total with the user’s monthly budget
+# o If the total expenses exceed the budget, display a warning (Example:
+# You have exceeded your budget!)
+# o If the expenses are within the budget, display the remaining balance
+# (Example: You have 150 left for the month)
 def track_budget():
   total_expenses = sum(expense["amount"] for expense in expenses)
   remaining_budget = budget - total_expenses
-  print(f"Remaining Budget: ${remaining_budget:.2f}")
-
+  if remaining_budget >0: 
+    print(f"Remaining Budget: ${remaining_budget:.2f}")
+  else:
+    print(f"Warning: exceeded budget by: ${remaining_budget:.2f}")
 
 
 def display_menu():
